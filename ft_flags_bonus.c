@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_flags_bonus.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 10:34:45 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/07/29 10:34:48 by mekaplan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_printf_bonus.h"
 
 static void	init_flags(t_flags *flags)
@@ -13,8 +25,8 @@ static void	init_flags(t_flags *flags)
 
 static void	parse_flags(const char **format, t_flags *flags)
 {
-	while (**format == '-' || **format == '0' || **format == '#' || 
-		**format == ' ' || **format == '+')
+	while (**format == '-' || **format == '0' || **format == '#'
+		|| **format == ' ' || **format == '+')
 	{
 		if (**format == '-')
 			flags->minus = 1;
