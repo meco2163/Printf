@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_int_utils_bonus.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/29 11:02:27 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/29 11:02:31 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/07/29 14:00:00 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/07/29 14:18:14 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_bonus.h"
 
-int print_sign(int n, t_flags *flags)
+int	print_sign(int n, t_flags *flags)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	if (n < 0)
@@ -26,10 +26,10 @@ int print_sign(int n, t_flags *flags)
 	return (count);
 }
 
-int print_precision_padding(int count)
+int	print_precision_padding(int count)
 {
-	int i;
-	int printed;
+	int	i;
+	int	printed;
 
 	i = 0;
 	printed = 0;
@@ -41,11 +41,11 @@ int print_precision_padding(int count)
 	return (printed);
 }
 
-int handle_right_padding(int len, t_flags *flags)
+int	handle_right_padding(int len, t_flags *flags)
 {
-	int count;
-	int padding;
-	int i;
+	int	count;
+	int	padding;
+	int	i;
 
 	count = 0;
 	padding = flags->width - len;
@@ -66,11 +66,11 @@ int handle_right_padding(int len, t_flags *flags)
 	return (count);
 }
 
-int handle_left_padding(int len, t_flags *flags)
+int	handle_left_padding(int len, t_flags *flags)
 {
-	int count;
-	int padding;
-	int i;
+	int	count;
+	int	padding;
+	int	i;
 
 	count = 0;
 	i = 0;
@@ -83,22 +83,20 @@ int handle_left_padding(int len, t_flags *flags)
 	return (count);
 }
 
-int print_number_with_flags(int n, char *num_str, int num_len, int precision_padding, t_flags *flags)
+int	print_number_with_flags(t_num_data *data, t_flags *flags)
 {
-	int count;
-	int total_len;
+	int	count;
+	int	total_len;
 
 	count = 0;
-	total_len = calculate_total_length(n, num_len, precision_padding, flags);
+	total_len = calculate_total_length(
+			data->n, data->num_len, data->precision_padding, flags);
 	if (!flags->minus)
 		count += handle_right_padding(total_len, flags);
-
-	count += print_sign(n, flags);
-	count += print_precision_padding(precision_padding);
-	count += write(1, num_str, num_len);
-
+	count += print_sign(data->n, flags);
+	count += print_precision_padding(data->precision_padding);
+	count += write(1, data->num_str, data->num_len);
 	if (flags->minus)
 		count += handle_left_padding(total_len, flags);
-
 	return (count);
 }

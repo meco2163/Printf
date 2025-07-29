@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_hex_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:36:15 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/29 10:36:18 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/29 14:25:09 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 static char	*ft_ultoa_base(unsigned long n, int is_upper)
 {
-	char            *base;
-	char            *str;
-	int             len;
-	unsigned long   tmp;
+	char			*base;
+	char			*str;
+	int				len;
+	unsigned long	tmp;
 
 	if (is_upper)
 		base = "0123456789ABCDEF";
@@ -26,8 +26,12 @@ static char	*ft_ultoa_base(unsigned long n, int is_upper)
 		base = "0123456789abcdef";
 	len = 1;
 	tmp = n;
-	while (tmp /= 16)
+	tmp = n / 16;
+	while (tmp != 0)
+	{
 		len++;
+		tmp = tmp / 16;
+	}
 	str = (char *)malloc(len + 1);
 	if (!str)
 		return (NULL);
@@ -78,11 +82,11 @@ static int	print_right_padding(t_flags *flags, int total_len)
 
 int	ft_print_hex_bonus(t_flags *flags, va_list args, char format)
 {
-	unsigned long   n;
-	char            *hex_str;
-	int             num_len;
-	int             count;
-	int             prefix_len;
+	unsigned long	n;
+	char			*hex_str;
+	int				num_len;
+	int				count;
+	int				prefix_len;
 
 	count = 0;
 	if (format == 'p')
@@ -97,7 +101,8 @@ int	ft_print_hex_bonus(t_flags *flags, va_list args, char format)
 		return (0);
 	num_len = ft_strlen(hex_str);
 	prefix_len = 0;
-	if ((flags->hash && n != 0 && (format == 'x' || format == 'X')) || format == 'p')
+	if ((flags->hash && n != 0
+		&& (format == 'x' || format == 'X')) || format == 'p')
 		prefix_len = 2;
 	count += print_padding(flags, num_len + prefix_len, n == 0);
 	count += print_prefix(flags, n, format);
