@@ -6,13 +6,13 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 14:00:00 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/29 14:18:14 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:45:52 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_bonus.h"
 
-int	print_sign(int n, t_flags *flags)
+static int	print_sign(int n, t_flags *flags)
 {
 	int	count;
 
@@ -26,22 +26,7 @@ int	print_sign(int n, t_flags *flags)
 	return (count);
 }
 
-int	print_precision_padding(int count)
-{
-	int	i;
-	int	printed;
-
-	i = 0;
-	printed = 0;
-	while (i < count)
-	{
-		printed += write(1, "0", 1);
-		i++;
-	}
-	return (printed);
-}
-
-int	handle_right_padding(int len, t_flags *flags)
+static int	handle_right_padding(int len, t_flags *flags)
 {
 	int	count;
 	int	padding;
@@ -66,7 +51,7 @@ int	handle_right_padding(int len, t_flags *flags)
 	return (count);
 }
 
-int	handle_left_padding(int len, t_flags *flags)
+static int	handle_left_padding(int len, t_flags *flags)
 {
 	int	count;
 	int	padding;
@@ -83,6 +68,17 @@ int	handle_left_padding(int len, t_flags *flags)
 	return (count);
 }
 
+static int	calculate_total_length(
+	int n, int num_len, int precision_padding, t_flags *flags)
+{
+	int	total_len;
+
+	total_len = num_len + precision_padding;
+	if (n < 0 || flags->plus || flags->space)
+		total_len++;
+	return (total_len);
+}
+
 int	print_number_with_flags(t_num_data *data, t_flags *flags)
 {
 	int	count;
@@ -92,8 +88,15 @@ int	print_number_with_flags(t_num_data *data, t_flags *flags)
 	total_len = calculate_total_length(
 			data->n, data->num_len, data->precision_padding, flags);
 	if (!flags->minus)
+	{
+		if (flags->zero && flags->dot < 0)
+			count += print_sign(data->n, flags);
 		count += handle_right_padding(total_len, flags);
-	count += print_sign(data->n, flags);
+		if (!(flags->zero && flags->dot < 0))
+			count += print_sign(data->n, flags);
+	}
+	else
+		count += print_sign(data->n, flags);
 	count += print_precision_padding(data->precision_padding);
 	count += write(1, data->num_str, data->num_len);
 	if (flags->minus)

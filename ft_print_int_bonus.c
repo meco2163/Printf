@@ -6,11 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:35:43 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/29 14:12:56 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/29 20:05:43 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_bonus.h"
+#include "Libft/libft.h"
 #include <stdlib.h>
 #include <limits.h>
 
@@ -25,15 +26,19 @@ static char	*create_num_str(int n, t_flags *flags)
 	return (ft_itoa(n));
 }
 
-static int	calculate_total_length(
-	int n, int num_len, int precision_padding, t_flags *flags)
+int	print_precision_padding(int count)
 {
-	int	total_len;
+	int	i;
+	int	printed;
 
-	total_len = num_len + precision_padding;
-	if (n < 0 || flags->plus || flags->space)
-		total_len++;
-	return (total_len);
+	i = 0;
+	printed = 0;
+	while (i < count)
+	{
+		printed += write(1, "0", 1);
+		i++;
+	}
+	return (printed);
 }
 
 int	ft_print_int_bonus(int n, t_flags *flags)

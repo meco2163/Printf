@@ -5,59 +5,60 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/29 10:36:49 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/29 13:58:39 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/07/30 21:40:22 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/07/30 22:40:42 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_bonus.h"
+#include "Libft/libft.h"
+#include <stdlib.h>
 
-static int	get_effective_len(char *str, t_flags *flags)
+static int	print_unsigned_leftpad(t_flags *flags, int padding)
 {
-	int	len;
-
-	len = ft_strlen(str);
-	if (flags->dot >= 0 && flags->dot < len)
-		return (flags->dot);
-	else
-		return (len);
-}
-
-static int	print_unsigned_padding(t_flags *flags, int content_len, int is_left)
-{
-	int		padding;
-	char	pad_char;
-
-	padding = flags->width - content_len;
-	if (padding <= 0)
-		return (0);
-	if (!is_left && flags->zero && flags->dot == -1)
-		pad_char = '0';
-	else
-		pad_char = ' ';
-	return (put_padding(padding, pad_char));
-}
-
-static int	handle_print_unsigned(char *str, t_flags *flags)
-{
-	int		count;
-	int		len;
-	int		precision_pad;
-	int		total_len;
+	int	count;
 
 	count = 0;
-	len = get_effective_len(str, flags);
+	if (!flags->minus)
+	{
+		if (flags->zero && flags->dot == -1)
+			count += put_padding(padding, '0');
+		else
+			count += put_padding(padding, ' ');
+	}
+	return (count);
+}
+
+static int	print_unsigned_rightpad(t_flags *flags, int padding)
+{
+	int	count;
+
+	count = 0;
+	if (flags->minus)
+		count += put_padding(padding, ' ');
+	return (count);
+}
+
+static int	handle_print_unsigned(char *num_str, t_flags *flags)
+{
+	int	count;
+	int	len;
+	int	precision_pad;
+	int	padding;
+
+	len = ft_strlen(num_str);
 	if (flags->dot > len)
 		precision_pad = flags->dot - len;
 	else
 		precision_pad = 0;
-	total_len = len + precision_pad;
-	if (!flags->minus)
-		count += print_unsigned_padding(flags, total_len, 0);
-	count += print_precision_padding(precision_pad);
-	count += write(1, str, len);
-	if (flags->minus)
-		count += print_unsigned_padding(flags, total_len, 1);
+	padding = flags->width - (len + precision_pad);
+	if (padding < 0)
+		padding = 0;
+	count = 0;
+	count += print_unsigned_leftpad(flags, padding);
+	count += put_padding(precision_pad, '0');
+	count += write(1, num_str, len);
+	count += print_unsigned_rightpad(flags, padding);
 	return (count);
 }
 
@@ -66,6 +67,7 @@ static char	*ft_utoa(unsigned int n)
 	char			*str;
 	int				len;
 	unsigned int	tmp;
+	int				i;
 
 	tmp = n;
 	len = 1;
@@ -75,13 +77,15 @@ static char	*ft_utoa(unsigned int n)
 		len++;
 		tmp /= 10;
 	}
-	str = (char *)malloc(len + 1);
+	str = malloc(len + 1);
 	if (!str)
 		return (NULL);
 	str[len] = '\0';
-	while (len--)
+	i = len;
+	while (i > 0)
 	{
-		str[len] = '0' + (n % 10);
+		i--;
+		str[i] = '0' + (n % 10);
 		n /= 10;
 	}
 	return (str);
@@ -100,7 +104,7 @@ int	ft_print_unsigned_bonus(t_flags *flags, va_list args)
 		num_str = ft_utoa(n);
 	if (!num_str)
 		return (0);
-	count = handle_print(num_str, flags);
+	count = handle_print_unsigned(num_str, flags);
 	free(num_str);
 	return (count);
 }
