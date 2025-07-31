@@ -6,55 +6,51 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:02:43 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/27 10:57:14 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/31 01:58:51 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_format_control(char format, va_list args)
+static int	handle_conversion(char c, va_list args, t_flags *flags)
 {
-	int	count;
-
-	count = 0;
-	if (format == 'c')
-		count += ft_print_char(va_arg(args, int));
-	else if (format == 's')
-		count += ft_print_string(va_arg(args, char *));
-	else if (format == 'd' || format == 'i')
-		count += ft_print_int(va_arg(args, int));
-	else if (format == 'u')
-		count += ft_print_unsigned(va_arg(args, unsigned int));
-	else if (format == 'x')
-		count += ft_print_hex_lower(va_arg(args, unsigned int));
-	else if (format == 'X')
-		count += ft_print_hex_upper(va_arg(args, unsigned int));
-	else if (format == 'p')
-		count += ft_print_pointer(va_arg(args, unsigned long));
-	else if (format == '%')
-		count += ft_print_percent();
-	return (count);
+	if (c == 'c')
+		return (ft_print_char_bonus(va_arg(args, int), flags));
+	if (c == 's')
+		return (ft_print_string_bonus(va_arg(args, char *), flags));
+	if (c == 'd' || c == 'i')
+		return (ft_print_int_bonus(va_arg(args, int), flags));
+	if (c == 'u')
+		return (ft_print_unsigned_bonus(flags, args));
+	if (c == 'x' || c == 'X' || c == 'p')
+		return (ft_print_hex_bonus(flags, args, c));
+	if (c == '%')
+		return (ft_print_percent_bonus(flags));
+	return (write(1, &c, 1));
 }
 
 int	ft_printf(const char *format, ...)
 {
 	va_list	args;
-	int		i;
+	t_flags	flags;
 	int		count;
 
 	va_start(args, format);
-	i = 0;
 	count = 0;
-	while (format[i])
+	while (*format)
 	{
-		if (format[i] == '%' && format[i + 1])
+		if (*format == '%')
 		{
-			count += ft_format_control(format[i + 1], args);
-			i++;
+			format++;
+			parse_all_flags(&format, &flags, args);
+			count += handle_conversion(*format, args, &flags);
+			format++;
 		}
 		else
-			count += write(1, &format[i], 1);
-		i++;
+		{
+			count += write(1, format, 1);
+			format++;
+		}
 	}
 	va_end(args);
 	return (count);

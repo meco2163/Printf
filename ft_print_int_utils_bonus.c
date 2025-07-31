@@ -6,11 +6,11 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 14:00:00 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/30 10:45:52 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/31 01:48:12 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
+#include "ft_printf.h"
 
 static int	print_sign(int n, t_flags *flags)
 {

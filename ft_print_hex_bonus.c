@@ -6,13 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:36:15 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/30 23:27:19 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/31 03:58:13 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
+#include "ft_printf.h"
 #include "Libft/libft.h"
-#include <stdlib.h>
 
 static int	print_prefix(t_flags *flags, unsigned long n, char f)
 {
@@ -32,19 +31,29 @@ static int	print_prefix(t_flags *flags, unsigned long n, char f)
 	return (0);
 }
 
-int	null_pointer_case(t_flags *flags)
+int	null_pointer_case(t_flags *flags, char f)
 {
 	int	pad;
 	int	cnt;
 
-	pad = flags->width - 5;
-	if (pad < 0)
-		pad = 0;
+	if (f == 'p')
+	{
+		pad = flags->width - 5;
+		if (pad < 0)
+			pad = 0;
+		cnt = 0;
+		if (!flags->minus)
+			cnt += put_padding(pad, ' ');
+		ft_putstr_fd("(nil)", 1);
+		cnt += 5;
+		if (flags->minus)
+			cnt += put_padding(pad, ' ');
+		return (cnt);
+	}
+	pad = flags->width;
 	cnt = 0;
 	if (!flags->minus)
 		cnt += put_padding(pad, ' ');
-	ft_putstr_fd("(nil)", 1);
-	cnt += 5;
 	if (flags->minus)
 		cnt += put_padding(pad, ' ');
 	return (cnt);
@@ -104,17 +113,17 @@ int	ft_print_hex_bonus(t_flags *flags, va_list args, char f)
 	{
 		n = (unsigned long)va_arg(args, void *);
 		if (n == 0)
-			return (null_pointer_case(flags));
+			return (null_pointer_case(flags, f));
 	}
 	else
 		n = (unsigned int)va_arg(args, unsigned int);
 	s = ft_ultoa_base(n, f == 'X');
 	if (!s)
 		return (0);
-	if (flags->dot == 0 && n == 0)
+	if (is_zero_case(flags, n))
 	{
 		free(s);
-		return (null_pointer_case(flags));
+		return (null_pointer_case(flags, f));
 	}
 	cnt = print_hex_core(n, s, flags, f);
 	free(s);

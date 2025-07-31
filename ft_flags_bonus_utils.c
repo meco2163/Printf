@@ -6,11 +6,11 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:34:58 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/30 21:33:06 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/31 01:48:52 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
+#include "ft_printf.h"
 #include "Libft/libft.h"
 
 int	put_padding(int width, char c)

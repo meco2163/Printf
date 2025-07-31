@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_flags_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:34:45 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/29 10:34:48 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/31 01:48:57 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
+#include "ft_printf.h"
 
 static void	init_flags(t_flags *flags)
 {

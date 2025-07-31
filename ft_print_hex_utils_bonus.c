@@ -6,12 +6,11 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 18:44:23 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/30 13:43:11 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/07/31 03:58:32 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
-#include <stdlib.h>
+#include "ft_printf.h"
 
 static char	*select_base(int is_upper)
 {
@@ -57,4 +56,9 @@ char	*ft_ultoa_base(unsigned long n, int is_upper)
 		return (NULL);
 	fill_hex_str(str, n, base, len);
 	return (str);
+}
+
+int	is_zero_case(t_flags *flags, unsigned long n)
+{
+	return (n == 0 && flags->dot == 0);
 }
