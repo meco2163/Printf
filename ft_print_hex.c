@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_hex.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/26 16:01:46 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 00:43:02 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/08/17 05:37:25 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/08/17 05:51:59 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

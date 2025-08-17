@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_percent.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/26 16:05:02 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 00:44:04 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/08/17 05:39:01 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/08/17 05:52:13 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

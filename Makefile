@@ -3,12 +3,13 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        #
+#    By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/07/26 16:05:57 by mekaplan          #+#    #+#              #
-#    Updated: 2025/07/31 03:30:00 by mekaplan         ###   ########.fr        #
+#    Created: 2025/08/17 05:41:00 by mekaplan          #+#    #+#              #
+#    Updated: 2025/08/17 05:52:35 by mekaplan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
 NAME        = libftprintf.a
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror
