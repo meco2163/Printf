@@ -6,25 +6,25 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:05:30 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/26 16:13:04 by mekaplan         ###   ########.tr       */
+/*   Updated: 2025/08/17 02:43:46 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 int	ft_print_string(char *s)
 {
-	int	i;
+	int	count;
 
 	if (!s)
-	{
 		s = "(null)";
-	}
-	i = 0;
-	while (s[i])
+	count = 0;
+	while (s[count])
 	{
-		write(1, &s[i], 1);
-		i++;
+		write(1, &s[count], 1);
+		count++;
 	}
-	return (i);
+	return (count);
 }

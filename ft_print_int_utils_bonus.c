@@ -6,11 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 14:00:00 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 01:48:12 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 00:43:44 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <unistd.h>
 
 static int	print_sign(int n, t_flags *flags)
 {

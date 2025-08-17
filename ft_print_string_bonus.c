@@ -6,30 +6,19 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:35:53 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 03:41:50 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 01:13:07 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "Libft/libft.h"
+#include <stdlib.h>
 
-static void	ft_putstrn(char *str, int n)
-{
-	int	i;
-
-	i = 0;
-	while (i < n && str[i])
-	{
-		write(1, &str[i], 1);
-		i++;
-	}
-}
-
-static int	get_print_len(const char *str, t_flags *flags)
+static int	get_print_len(const char *s, t_flags *flags)
 {
 	int	len;
 
-	len = ft_strlen(str);
+	len = ft_strlen(s);
 	if (flags->dot >= 0 && flags->dot < len)
 		return (flags->dot);
 	return (len);
@@ -37,9 +26,10 @@ static int	get_print_len(const char *str, t_flags *flags)
 
 int	ft_print_string_bonus(const char *str, t_flags *flags)
 {
-	int		print_len;
-	int		padding;
-	char	*s;
+	const char	*s;
+	int			print_len;
+	int			padding;
+	int			count;
 
 	if (!str)
 	{
@@ -49,13 +39,14 @@ int	ft_print_string_bonus(const char *str, t_flags *flags)
 			s = "";
 	}
 	else
-		s = (char *)str;
+		s = str;
 	print_len = get_print_len(s, flags);
 	padding = get_padding(flags->width, print_len);
+	count = 0;
 	if (!flags->minus)
-		put_padding(padding, ' ');
-	ft_putstrn(s, print_len);
+		count += put_padding(padding, ' ');
+	count += ft_putnstr_fd(s, print_len, 1);
 	if (flags->minus)
-		put_padding(padding, ' ');
-	return (print_len + padding);
+		count += put_padding(padding, ' ');
+	return (count);
 }

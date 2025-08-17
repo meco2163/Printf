@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 21:40:22 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 01:47:54 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 01:05:57 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	handle_print_unsigned(char *num_str, t_flags *flags)
 	count = 0;
 	count += print_unsigned_leftpad(flags, padding);
 	count += put_padding(precision_pad, '0');
-	count += write(1, num_str, len);
+	count += ft_putnstr_fd(num_str, len, 1);
 	count += print_unsigned_rightpad(flags, padding);
 	return (count);
 }
@@ -77,7 +77,7 @@ static char	*ft_utoa(unsigned int n)
 		len++;
 		tmp /= 10;
 	}
-	str = malloc(len + 1);
+	str = (char *)malloc(len + 1);
 	if (!str)
 		return (NULL);
 	str[len] = '\0';
@@ -85,7 +85,7 @@ static char	*ft_utoa(unsigned int n)
 	while (i > 0)
 	{
 		i--;
-		str[i] = '0' + (n % 10);
+		str[i] = (char)('0' + (n % 10));
 		n /= 10;
 	}
 	return (str);

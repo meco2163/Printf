@@ -6,11 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:05:02 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/26 21:12:18 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 00:44:04 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <unistd.h>
 
 int	ft_print_percent(void)
 {

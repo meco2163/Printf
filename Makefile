@@ -9,15 +9,18 @@
 #    Updated: 2025/07/31 03:30:00 by mekaplan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
 NAME        = libftprintf.a
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror
-AR          = ar rcs
+AR          = ar
+ARFLAGS     = rcs
 
 LIBFT_DIR   = Libft
 LIBFT_A     = $(LIBFT_DIR)/libft.a
 LIBFT_OBJS  = $(LIBFT_DIR)/*.o
+
+INCLUDES        = -I.
+BONUS_INCLUDES  = -I. -I$(LIBFT_DIR)
 
 SRCS        = ft_printf.c \
               ft_print_char.c \
@@ -27,7 +30,7 @@ SRCS        = ft_printf.c \
               ft_print_hex.c \
               ft_print_percent.c
 
-BONUS_SRCS  = ft_printf.c \
+BONUS_SRCS  = ft_printf_bonus.c \
               ft_print_char_bonus.c \
               ft_print_string_bonus.c \
               ft_print_int_bonus.c \
@@ -37,33 +40,34 @@ BONUS_SRCS  = ft_printf.c \
               ft_print_hex_utils_bonus.c \
               ft_print_percent_bonus.c \
               ft_flags_bonus.c \
-              ft_flags_bonus_utils.c
+              ft_flags_utils_bonus.c
 
 OBJS        = $(SRCS:.c=.o)
 BONUS_OBJS  = $(BONUS_SRCS:.c=.o)
 
-INCLUDES    = -I. -I$(LIBFT_DIR)
-
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@make -C $(LIBFT_DIR)
-	$(AR) $(NAME) $(OBJS) $(LIBFT_OBJS)
+	$(AR) $(ARFLAGS) $(NAME) $(OBJS)
 
 bonus: $(BONUS_OBJS)
-	@make -C $(LIBFT_DIR)
-	$(AR) $(NAME) $(BONUS_OBJS) $(LIBFT_OBJS)
+	@$(MAKE) -C $(LIBFT_DIR)
+	rm -f $(NAME)
+	$(AR) $(ARFLAGS) $(NAME) $(BONUS_OBJS) $(LIBFT_OBJS)
 
-%.o: %.c
+$(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(BONUS_OBJS): %.o: %.c
+	$(CC) $(CFLAGS) $(BONUS_INCLUDES) -c $< -o $@
 
 clean:
 	rm -f $(OBJS) $(BONUS_OBJS)
-	make clean -C $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
-	make fclean -C $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 

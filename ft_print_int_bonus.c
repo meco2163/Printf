@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:35:43 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 01:48:17 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 01:32:11 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,17 @@ static char	*create_num_str(int n, t_flags *flags)
 	return (ft_itoa(n));
 }
 
-int	print_precision_padding(int count)
+int	print_precision_padding(int width)
 {
-	int	i;
-	int	printed;
+	int	count;
 
-	i = 0;
-	printed = 0;
-	while (i < count)
+	count = 0;
+	while (width-- > 0)
 	{
-		printed += write(1, "0", 1);
-		i++;
+		ft_putchar_fd('0', 1);
+		count++;
 	}
-	return (printed);
+	return (count);
 }
 
 int	ft_print_int_bonus(int n, t_flags *flags)

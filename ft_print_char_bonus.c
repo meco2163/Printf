@@ -6,11 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:35:29 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 02:27:22 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 00:41:42 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <unistd.h>
 
 int	ft_print_char_bonus(char c, t_flags *flags)
 {

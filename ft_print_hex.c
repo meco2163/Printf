@@ -6,11 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:01:46 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/27 12:52:40 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 00:43:02 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <unistd.h>
 
 static int	ft_print_hex_recursive(unsigned long n, char *base)
 {

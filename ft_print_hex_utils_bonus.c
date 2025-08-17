@@ -6,11 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 18:44:23 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 03:58:32 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 01:11:41 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <stdlib.h>
 
 static char	*select_base(int is_upper)
 {

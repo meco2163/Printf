@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_char.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:02:29 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/26 16:14:01 by mekaplan         ###   ########.tr       */
+/*   Updated: 2025/08/17 00:41:59 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <unistd.h>
 
 int	ft_print_char(int c)
 {

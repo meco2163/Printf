@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_flags_bonus_utils.c                             :+:      :+:    :+:   */
+/*   ft_flags_utils_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mekaplan <mekaplan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:34:58 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/07/31 01:48:52 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/17 03:34:50 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ int	put_padding(int width, char c)
 
 	count = 0;
 	while (width-- > 0)
-		count += write(1, &c, 1);
+	{
+		ft_putchar_fd(c, 1);
+		count++;
+	}
 	return (count);
 }
 
@@ -30,15 +33,17 @@ int	get_padding(int width, int print_len)
 	return (0);
 }
 
-int	print_padding(int count, char c)
+int	ft_putnstr_fd(const char *s, int n, int fd)
 {
-	int	i;
+	int	count;
 
-	i = 0;
-	while (i < count)
+	if (!s || n <= 0)
+		return (0);
+	count = 0;
+	while (s[count] && count < n)
 	{
-		ft_putchar_fd(c, 1);
-		i++;
+		ft_putchar_fd(s[count], fd);
+		count++;
 	}
 	return (count);
 }
