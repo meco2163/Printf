@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:36:08 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:52:27 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/19 13:23:29 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,30 +27,54 @@ static int	handle_conversion_bonus(char c, va_list args, t_flags *flags)
 		return (ft_print_hex_bonus(flags, args, c));
 	if (c == '%')
 		return (ft_print_percent_bonus(flags));
-	return (write(1, &c, 1));
+	return (write(1, "%", 1));
+}
+
+static int	process_percent(const char **fmt, va_list args, t_flags *flags)
+{
+	int	n;
+
+	if (**fmt == '\0')
+		return (write(1, "%", 1));
+	parse_all_flags(fmt, flags, args);
+	if (**fmt == '\0')
+		return (write(1, "%", 1));
+	if (**fmt == '%')
+	{
+		(*fmt)++;
+		return (ft_print_percent_bonus(flags));
+	}
+	if (**fmt == 'c' || **fmt == 's' || **fmt == 'd' || **fmt == 'i'
+		|| **fmt == 'u' || **fmt == 'x' || **fmt == 'X' || **fmt == 'p')
+	{
+		n = handle_conversion_bonus(**fmt, args, flags);
+		(*fmt)++;
+		return (n);
+	}
+	n = write(1, "%", 1);
+	(*fmt)++;
+	return (n);
 }
 
 int	ft_printf(const char *format, ...)
 {
-	va_list		args;
-	t_flags		flags;
-	int			count;
+	va_list	args;
+	t_flags	flags;
+	int		count;
 
 	va_start(args, format);
 	count = 0;
 	while (*format)
 	{
-		if (*format == '%')
+		if (*format != '%')
 		{
-			format++;
-			parse_all_flags(&format, &flags, args);
-			count += handle_conversion_bonus(*format, args, &flags);
+			count += write(1, format, 1);
 			format++;
 		}
 		else
 		{
-			count += write(1, format, 1);
 			format++;
+			count += process_percent(&format, args, &flags);
 		}
 	}
 	va_end(args);
