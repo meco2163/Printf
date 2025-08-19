@@ -27,33 +27,67 @@ static int	handle_conversion_bonus(char c, va_list args, t_flags *flags)
 		return (ft_print_hex_bonus(flags, args, c));
 	if (c == '%')
 		return (ft_print_percent_bonus(flags));
-	return (write(1, "%", 1));
+	return (write(1, &c, 1));
 }
 
-static int	process_percent(const char **fmt, va_list args, t_flags *flags)
+static const char	*scan_meta_end(const char *p)
 {
-	int	n;
+	while (*p && (*p == '-' || *p == '0' || *p == '#' || *p == ' '
+			|| *p == '+' || *p == '*' || *p == '.'
+			|| (*p >= '0' && *p <= '9')))
+		p++;
+	return (p);
+}
 
-	if (**fmt == '\0')
-		return (write(1, "%", 1));
-	parse_all_flags(fmt, flags, args);
-	if (**fmt == '\0')
-		return (write(1, "%", 1));
-	if (**fmt == '%')
+static int	emit_invalid_seq_bonus(const char **format, const char *start)
+{
+	const char	*p;
+	const char	*q;
+	int			count;
+
+	p = start;
+	q = scan_meta_end(p);
+	if (*q == '\0')
 	{
-		(*fmt)++;
+		*format = q;
+		return (-1);
+	}
+	count = write(1, "%", 1);
+	count += write(1, p, q - p);
+	if (*q && !((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z')))
+	{
+		count += write(1, q, 1);
+		q++;
+	}
+	*format = q;
+	return (count);
+}
+
+static int	process_percent(const char **format, va_list args, t_flags *flags)
+{
+	const char	*start;
+	int			count;
+
+	if (**format == '\0')
+		return (write(1, "%", 1));
+	start = *format;
+	parse_all_flags(format, flags, args);
+	if (**format == '\0')
+		return (write(1, "%", 1));
+	if (**format == '%')
+	{
+		(*format)++;
 		return (ft_print_percent_bonus(flags));
 	}
-	if (**fmt == 'c' || **fmt == 's' || **fmt == 'd' || **fmt == 'i'
-		|| **fmt == 'u' || **fmt == 'x' || **fmt == 'X' || **fmt == 'p')
+	if (**format == 'c' || **format == 's' || **format == 'd'
+		|| **format == 'i' || **format == 'u' || **format == 'x'
+		|| **format == 'X' || **format == 'p')
 	{
-		n = handle_conversion_bonus(**fmt, args, flags);
-		(*fmt)++;
-		return (n);
+		count = handle_conversion_bonus(**format, args, flags);
+		(*format)++;
+		return (count);
 	}
-	n = write(1, "%", 1);
-	(*fmt)++;
-	return (n);
+	return (emit_invalid_seq_bonus(format, start));
 }
 
 int	ft_printf(const char *format, ...)

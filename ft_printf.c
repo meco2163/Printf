@@ -31,39 +31,60 @@ static int	handle_conversion_mandatory(char c, va_list args)
 		return (ft_print_pointer(va_arg(args, unsigned long)));
 	if (c == '%')
 		return (ft_print_percent());
-	return (write(1, "%", 1));
+	return (write(1, &c, 1));
 }
 
-static int	is_valid_mandatory(char c)
+static const char	*scan_meta_end(const char *p)
 {
-	if (c == 'c' || c == 's' || c == 'd' || c == 'i')
-		return (1);
-	if (c == 'u' || c == 'x' || c == 'X' || c == 'p' || c == '%')
-		return (1);
-	return (0);
+	while (*p && (*p == '-' || *p == '0' || *p == '#' || *p == ' '
+			|| *p == '+' || *p == '*' || *p == '.'
+			|| (*p >= '0' && *p <= '9')))
+		p++;
+	return (p);
 }
 
-static int	process_percent_mandatory(const char **fmt, va_list args)
+static int	emit_invalid_seq(const char **format)
 {
-	int		n;
+	const char	*p;
+	const char	*q;
+	int			count;
+
+	p = *format + 1;
+	q = scan_meta_end(p);
+	if (*q == '\0')
+	{
+		*format = q;
+		return (-1);
+	}
+	count = write(1, "%", 1);
+	count += write(1, p, q - p);
+	if (*q && !((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z')))
+	{
+		count += write(1, q, 1);
+		q++;
+	}
+	*format = q;
+	return (count);
+}
+
+static int	process_percent_mandatory(const char **format, va_list args)
+{
 	char	next;
 
-	if (*((*fmt) + 1) == '\0')
+	if (*((*format) + 1) == '\0')
 	{
-		n = write(1, "%", 1);
-		*fmt += 1;
-		return (n);
+		*format += 1;
+		return (write(1, "%", 1));
 	}
-	next = *(*fmt + 1);
-	if (is_valid_mandatory(next))
+	next = *(*format + 1);
+	if (next == 'c' || next == 's' || next == 'd' || next == 'i'
+		|| next == 'u' || next == 'x' || next == 'X' || next == 'p'
+		|| next == '%')
 	{
-		n = handle_conversion_mandatory(next, args);
-		*fmt += 2;
-		return (n);
+		*format += 2;
+		return (handle_conversion_mandatory(next, args));
 	}
-	n = write(1, "%", 1);
-	*fmt += 1;
-	return (n);
+	return (emit_invalid_seq(format));
 }
 
 int	ft_printf(const char *format, ...)
