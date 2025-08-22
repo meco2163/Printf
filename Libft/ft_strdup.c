@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_percent.c                                 :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/17 05:39:01 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/21 20:22:44 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/05/29 20:26:15 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/05/29 20:26:17 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
+#include <stdlib.h>
 
-int	ft_print_percent(void)
+char	*ft_strdup(const char *s1)
 {
-	int	count;
+	char	*s2;
+	size_t	len;
 
-	count = 0;
-	if (acc_write(&count, "%", 1) < 0)
-		return (-1);
-	return (count);
+	len = ft_strlen(s1) + 1;
+	s2 = malloc(len * sizeof(char));
+	if (!s2)
+		return (NULL);
+	ft_strlcpy(s2, s1, len);
+	return (s2);
 }

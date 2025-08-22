@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_percent.c                                 :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/17 05:39:01 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/21 20:22:44 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/05/29 18:53:14 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/05/29 18:53:16 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include <unistd.h>
 
-int	ft_print_percent(void)
+void	ft_putstr_fd(char *s, int fd)
 {
-	int	count;
-
-	count = 0;
-	if (acc_write(&count, "%", 1) < 0)
-		return (-1);
-	return (count);
+	if (!s || fd < 0)
+		return ;
+	while (*s)
+	{
+		write(fd, s++, 1);
+	}
 }

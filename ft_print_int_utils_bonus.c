@@ -6,101 +6,94 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:38:33 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:52:05 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/22 01:10:34 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <unistd.h>
+
+int	print_precision_padding(int width)
+{
+	int	part;
+
+	part = put_padding(width, '0');
+	if (part < 0)
+		return (-1);
+	return (part);
+}
 
 static int	print_sign(int n, t_flags *flags)
 {
-	int	count;
+	int		count;
+	char	ch;
 
 	count = 0;
 	if (n < 0)
-		count += write(1, "-", 1);
+		ch = '-';
 	else if (flags->plus)
-		count += write(1, "+", 1);
+		ch = '+';
 	else if (flags->space)
-		count += write(1, " ", 1);
-	return (count);
-}
-
-static int	handle_right_padding(int len, t_flags *flags)
-{
-	int	count;
-	int	padding;
-	int	i;
-
-	count = 0;
-	padding = flags->width - len;
-	if (padding > 0)
-	{
-		if (flags->zero && flags->dot < 0 && !flags->minus)
-			count += print_precision_padding(padding);
-		else
-		{
-			i = 0;
-			while (i < padding)
-			{
-				count += write(1, " ", 1);
-				i++;
-			}
-		}
-	}
-	return (count);
-}
-
-static int	handle_left_padding(int len, t_flags *flags)
-{
-	int	count;
-	int	padding;
-	int	i;
-
-	count = 0;
-	i = 0;
-	padding = flags->width - len;
-	while (i < padding)
-	{
-		count += write(1, " ", 1);
-		i++;
-	}
-	return (count);
-}
-
-static int	calculate_total_length(
-	int n, int num_len, int precision_padding, t_flags *flags)
-{
-	int	total_len;
-
-	total_len = num_len + precision_padding;
-	if (n < 0 || flags->plus || flags->space)
-		total_len++;
-	return (total_len);
-}
-
-int	print_number_with_flags(t_num_data *data, t_flags *flags)
-{
-	int	count;
-	int	total_len;
-
-	count = 0;
-	total_len = calculate_total_length(
-			data->n, data->num_len, data->precision_padding, flags);
-	if (!flags->minus)
-	{
-		if (flags->zero && flags->dot < 0)
-			count += print_sign(data->n, flags);
-		count += handle_right_padding(total_len, flags);
-		if (!(flags->zero && flags->dot < 0))
-			count += print_sign(data->n, flags);
-	}
+		ch = ' ';
 	else
-		count += print_sign(data->n, flags);
-	count += print_precision_padding(data->precision_padding);
-	count += write(1, data->num_str, data->num_len);
-	if (flags->minus)
-		count += handle_left_padding(total_len, flags);
+		return (0);
+	if (acc_write(&count, &ch, 1) < 0)
+		return (-1);
 	return (count);
+}
+
+static int	pre_left_no_minus(t_num_data *d, t_flags *f,
+			t_hex_params *p, int *cnt)
+{
+	if (f->zero && f->dot < 0)
+	{
+		p->part = print_sign(d->n, f);
+		if (p->part < 0)
+			return (-1);
+		*cnt += p->part;
+	}
+	p->part = write_left_pad(f, p);
+	if (p->part < 0)
+		return (-1);
+	*cnt += p->part;
+	if (!(f->zero && f->dot < 0))
+	{
+		p->part = print_sign(d->n, f);
+		if (p->part < 0)
+			return (-1);
+		*cnt += p->part;
+	}
+	return (0);
+}
+
+int	pre_left_stage(t_num_data *d, t_flags *f,
+			t_hex_params *p, int *cnt)
+{
+	if (!f->minus)
+		return (pre_left_no_minus(d, f, p, cnt));
+	p->part = print_sign(d->n, f);
+	if (p->part < 0)
+		return (-1);
+	*cnt += p->part;
+	return (0);
+}
+
+int	body_and_tail(t_flags *f, t_hex_params *p,
+			t_num_data *d, int *cnt)
+{
+	p->part = print_precision_padding(p->dotpad);
+	if (p->part < 0)
+		return (-1);
+	*cnt += p->part;
+	p->part = ft_putnstr_fd(d->num_str, p->len, 1);
+	if (p->part < 0)
+		return (-1);
+	*cnt += p->part;
+	if (f->minus)
+	{
+		p->part = write_right_pad(f, p);
+		if (p->part < 0)
+			return (-1);
+		*cnt += p->part;
+	}
+	return (0);
 }

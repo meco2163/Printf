@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_percent.c                                 :+:      :+:    :+:   */
+/*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mekaplan <mekaplan@student.42kocaeli.com.  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/17 05:39:01 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/21 20:22:44 by mekaplan         ###   ########.fr       */
+/*   Created: 2025/05/28 20:20:25 by mekaplan          #+#    #+#             */
+/*   Updated: 2025/07/06 21:53:46 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-int	ft_print_percent(void)
+int	ft_lstsize(t_list *lst)
 {
-	int	count;
+	int	i;
 
-	count = 0;
-	if (acc_write(&count, "%", 1) < 0)
-		return (-1);
-	return (count);
+	i = 1;
+	if (!lst)
+		return (0);
+	while (lst->next)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
 }

@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:34:49 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:54:54 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/21 21:39:47 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,9 @@ int	parse_all_flags(const char **format, t_flags *flags, va_list args)
 	parse_flags(format, flags);
 	parse_width(format, flags, args);
 	parse_precision(format, flags, args);
+	if (flags->minus)
+		flags->zero = 0;
+	if (flags->plus)
+		flags->space = 0;
 	return (0);
 }

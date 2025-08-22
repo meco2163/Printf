@@ -6,24 +6,31 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:35:10 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:51:35 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/22 02:39:47 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "Libft/libft.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 int	put_padding(int width, char c)
 {
-	int	count;
+	int	i;
+	int	w;
 
-	count = 0;
-	while (width-- > 0)
+	if (width <= 0)
+		return (0);
+	i = 0;
+	while (i < width)
 	{
-		ft_putchar_fd(c, 1);
-		count++;
+		w = write(1, &c, 1);
+		if (w <= 0)
+			return (-1);
+		i += w;
 	}
-	return (count);
+	return (width);
 }
 
 int	get_padding(int width, int print_len)
@@ -33,19 +40,22 @@ int	get_padding(int width, int print_len)
 	return (0);
 }
 
-int	ft_putnstr_fd(const char *s, int n, int fd)
+int	ft_putnstr_fd(const char *s, int count, int fd)
 {
-	int	count;
+	int	i;
+	int	w;
 
-	if (!s || n <= 0)
+	if (!s || count <= 0)
 		return (0);
-	count = 0;
-	while (s[count] && count < n)
+	i = 0;
+	while (s[i] && i < count)
 	{
-		ft_putchar_fd(s[count], fd);
-		count++;
+		w = write(fd, s + i, 1);
+		if (w <= 0)
+			return (-1);
+		i += w;
 	}
-	return (count);
+	return (i);
 }
 
 int	calc_prefix_len(t_flags *flags, unsigned long n, char format)

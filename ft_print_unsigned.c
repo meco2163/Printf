@@ -6,25 +6,33 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:40:42 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:52:24 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/21 21:20:41 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <unistd.h>
+
+static int	put_uint(unsigned int n, int *count)
+{
+	char	c;
+
+	if (n >= 10)
+	{
+		if (put_uint(n / 10, count) < 0)
+			return (-1);
+	}
+	c = (char)('0' + (n % 10));
+	if (acc_write(count, &c, 1) < 0)
+		return (-1);
+	return (0);
+}
 
 int	ft_print_unsigned(unsigned int n)
 {
-	int		count;
-	char	c;
+	int	count;
 
 	count = 0;
-	if (n >= 10)
-	{
-		count += ft_print_unsigned(n / 10);
-	}
-	c = (n % 10) + '0';
-	write(1, &c, 1);
-	count++;
+	if (put_uint(n, &count) < 0)
+		return (-1);
 	return (count);
 }

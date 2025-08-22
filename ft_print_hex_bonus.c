@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:37:00 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:51:52 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/22 03:48:22 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,94 +14,93 @@
 #include "Libft/libft.h"
 #include <stdlib.h>
 
-static int	print_prefix(t_flags *flags, unsigned long n, char f)
+static int	print_prefix_x(t_flags *flags, unsigned long n, char format)
 {
-	if (f == 'p')
-	{
-		ft_putstr_fd("0x", 1);
-		return (2);
-	}
+	int	count;
+	int	part;
+
+	count = 0;
 	if (flags->hash && n != 0)
 	{
-		if (f == 'x')
-			ft_putstr_fd("0x", 1);
+		if (format == 'x')
+			part = acc_write(1, "0x", 2);
 		else
-			ft_putstr_fd("0X", 1);
-		return (2);
+			part = acc_write(1, "0X", 2);
+		if (part < 0)
+			return (-1);
+		count += part;
+		return (count);
 	}
 	return (0);
 }
 
-static int	null_pointer_case(t_flags *flags, char format)
+static int	emit_left_side(unsigned long n, t_flags *f, char format,
+			t_hex_params *params)
 {
-	int	pad;
+	int	zero_mode;
 	int	count;
+	int	part;
 
-	if (format == 'p')
-	{
-		pad = flags->width - 5;
-		if (pad < 0)
-			pad = 0;
-		count = 0;
-		if (!flags->minus)
-			count += put_padding(pad, ' ');
-		ft_putstr_fd("(nil)", 1);
-		count += 5;
-		if (flags->minus)
-			count += put_padding(pad, ' ');
-		return (count);
-	}
-	pad = flags->width;
+	zero_mode = (f->zero && f->dot < 0 && !f->minus);
 	count = 0;
-	if (!flags->minus)
-		count += put_padding(pad, ' ');
-	if (flags->minus)
-		count += put_padding(pad, ' ');
+	if (zero_mode)
+		part = print_prefix_x(f, n, format);
+	if (part < 0)
+		return (-1);
+	count += part;
+	part = write_hex_left_pad(f, params, zero_mode);
+	if (part < 0)
+		return (-1);
+	count += part;
+	if (!zero_mode)
+		part = print_prefix_x(f, n, format);
+	if (part < 0)
+		return (-1);
+	count += part;
 	return (count);
 }
 
-static t_hex_params	compute_hex_params(const char *s, t_flags *flags,
-			unsigned long n, char format)
+static int	emit_right_side(const char *s, t_flags *flags, t_hex_params *params)
 {
-	t_hex_params	p;
-	int				total;
+	int	count;
+	int	part;
 
-	p.len = ft_strlen(s);
-	p.dotpad = 0;
-	if (flags->dot > p.len)
-		p.dotpad = flags->dot - p.len;
-	p.prefix_len = calc_prefix_len(flags, n, format);
-	total = p.prefix_len + p.dotpad + p.len;
-	p.pad = flags->width - total;
-	if (p.pad < 0)
-		p.pad = 0;
-	return (p);
+	count = 0;
+	part = put_padding(params->dotpad, '0');
+	if (part < 0)
+		return (-1);
+	count += part;
+	part = ft_putnstr_fd(s, params->len, 1);
+	if (part < 0)
+		return (-1);
+	count += part;
+	if (flags->minus)
+	{
+		part = put_padding(params->pad, ' ');
+		if (part < 0)
+			return (-1);
+		count += part;
+	}
+	return (count);
 }
 
-static int	print_hex_core(unsigned long n,
-			const char *s, t_flags *flags, char format)
+static int	print_hex_core(unsigned long n, const char *s,
+			t_flags *flags, char format)
 {
-	t_hex_params	p;
+	t_hex_params	*params;
 	int				count;
+	int				part;
 
-	p = compute_hex_params(s, flags, n, format);
+	params = compute_hex_params(s, flags, n, format);
 	count = 0;
-	if (flags->zero && flags->dot < 0 && !flags->minus)
-	{
-		count += print_prefix(flags, n, format);
-		count += put_padding(p.pad, '0');
-	}
-	else
-	{
-		if (!flags->minus)
-			count += put_padding(p.pad, ' ');
-		count += print_prefix(flags, n, format);
-	}
-	count += put_padding(p.dotpad, '0');
-	ft_putstr_fd((char *)s, 1);
-	count += p.len;
-	if (flags->minus)
-		count += put_padding(p.pad, ' ');
+	part = emit_left_side(n, flags, format, &params);
+	if (part < 0)
+		return (-1);
+	count += part;
+	part = emit_right_side(s, flags, &params);
+	if (part < 0)
+		return (-1);
+	count += part;
 	return (count);
 }
 
@@ -111,22 +110,12 @@ int	ft_print_hex_bonus(t_flags *flags, va_list args, char format)
 	char			*s;
 	int				count;
 
-	if (format == 'p')
-	{
-		n = (unsigned long)va_arg(args, void *);
-		if (n == 0)
-			return (null_pointer_case(flags, format));
-	}
-	else
-		n = (unsigned int)va_arg(args, unsigned int);
+	n = (unsigned int)va_arg(args, unsigned int);
+	if (is_zero_case(flags, n))
+		return (write_padded_literal(NULL, 0, flags));
 	s = ft_ultoa_base(n, format == 'X');
 	if (!s)
-		return (0);
-	if (is_zero_case(flags, n))
-	{
-		free(s);
-		return (null_pointer_case(flags, format));
-	}
+		return (-1);
 	count = print_hex_core(n, s, flags, format);
 	free(s);
 	return (count);

@@ -6,41 +6,38 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:36:24 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/19 13:24:50 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/21 21:11:49 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <unistd.h>
+#include <stdarg.h>
 
 static int	handle_conversion_mandatory(char c, va_list args)
 {
-	if (c == 'c')
-		return (ft_print_char(va_arg(args, int)));
-	if (c == 's')
-		return (ft_print_string(va_arg(args, char *)));
-	if (c == 'd' || c == 'i')
-		return (ft_print_int(va_arg(args, int)));
-	if (c == 'u')
-		return (ft_print_unsigned(va_arg(args, unsigned int)));
-	if (c == 'x')
-		return (ft_print_hex_lower(va_arg(args, unsigned int)));
-	if (c == 'X')
-		return (ft_print_hex_upper(va_arg(args, unsigned int)));
-	if (c == 'p')
-		return (ft_print_pointer(va_arg(args, unsigned long)));
-	if (c == '%')
-		return (ft_print_percent());
-	return (write(1, &c, 1));
-}
+	int		count;
+	char	ch;
 
-static const char	*scan_meta_end(const char *p)
-{
-	while (*p && (*p == '-' || *p == '0' || *p == '#' || *p == ' '
-			|| *p == '+' || *p == '*' || *p == '.'
-			|| (*p >= '0' && *p <= '9')))
-		p++;
-	return (p);
+	count = 0;
+	if (c == 'c')
+		count = ft_print_char(va_arg(args, int));
+	else if (c == 's')
+		count = ft_print_string(va_arg(args, char *));
+	else if (c == 'd' || c == 'i')
+		count = ft_print_int(va_arg(args, int));
+	else if (c == 'u')
+		count = ft_print_unsigned(va_arg(args, unsigned int));
+	else if (c == 'x' || c == 'X' || c == 'p')
+		count = ft_print_hex(c, args);
+	else if (c == '%')
+		count = ft_print_percent();
+	else
+	{
+		ch = (char)c;
+		if (acc_write(&count, &ch, 1) < 0)
+			return (-1);
+	}
+	return (count);
 }
 
 static int	emit_invalid_seq(const char **format)
@@ -56,11 +53,15 @@ static int	emit_invalid_seq(const char **format)
 		*format = q;
 		return (-1);
 	}
-	count = write(1, "%", 1);
-	count += write(1, p, q - p);
+	count = 0;
+	if (acc_write(&count, "%", 1) < 0)
+		return (-1);
+	if (acc_write(&count, p, (int)(q - p)) < 0)
+		return (-1);
 	if (*q && !((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z')))
 	{
-		count += write(1, q, 1);
+		if (acc_write(&count, q, 1) < 0)
+			return (-1);
 		q++;
 	}
 	*format = q;
@@ -70,39 +71,58 @@ static int	emit_invalid_seq(const char **format)
 static int	process_percent_mandatory(const char **format, va_list args)
 {
 	char	next;
+	int		count_part;
 
-	if (*((*format) + 1) == '\0')
-	{
-		*format += 1;
-		return (write(1, "%", 1));
-	}
 	next = *(*format + 1);
-	if (next == 'c' || next == 's' || next == 'd' || next == 'i'
-		|| next == 'u' || next == 'x' || next == 'X' || next == 'p'
-		|| next == '%')
+	if (is_spec((int)next))
 	{
 		*format += 2;
-		return (handle_conversion_mandatory(next, args));
+		count_part = handle_conversion_mandatory(next, args);
+		return (count_part);
 	}
-	return (emit_invalid_seq(format));
+	count_part = emit_invalid_seq(format);
+	return (count_part);
+}
+
+static int	step(const char **format, va_list args, int *count)
+{
+	int	count_part;
+	int	tmp;
+
+	if (**format != '%')
+		return (emit_literal(format, count));
+	if (*(*format + 1) == '\0')
+	{
+		tmp = 0;
+		if (acc_write(&tmp, "%", 1) < 0)
+			return (-1);
+		return (-2);
+	}
+	count_part = process_percent_mandatory(format, args);
+	if (count_part < 0)
+		return (-1);
+	*count += count_part;
+	return (0);
 }
 
 int	ft_printf(const char *format, ...)
 {
 	va_list	args;
 	int		count;
+	int		status;
 
+	if (!format)
+		return (-1);
 	va_start(args, format);
 	count = 0;
 	while (*format)
 	{
-		if (*format == '%')
+		status = step(&format, args, &count);
+		if (status)
 		{
-			count += process_percent_mandatory(&format, args);
-			continue ;
+			va_end(args);
+			return (-1);
 		}
-		count += write(1, format, 1);
-		format++;
 	}
 	va_end(args);
 	return (count);

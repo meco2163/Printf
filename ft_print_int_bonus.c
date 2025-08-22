@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:38:02 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/17 05:52:02 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/22 01:13:08 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,31 @@ static char	*create_num_str(int n, t_flags *flags)
 	return (ft_itoa(n));
 }
 
-int	print_precision_padding(int width)
+static void	init_calc(t_hex_params *p, t_num_data *d, t_flags *f)
 {
-	int	count;
+	int	total;
 
+	p->len = d->num_len;
+	p->dotpad = d->precision_padding;
+	p->prefix_len = 0;
+	total = d->num_len + d->precision_padding;
+	if (d->n < 0 || f->plus || f->space)
+		total++;
+	p->pad = get_padding(f->width, total);
+	p->part = 0;
+}
+
+static int	print_number_with_flags(t_num_data *data, t_flags *flags)
+{
+	t_hex_params	p;
+	int				count;
+
+	init_calc(&p, data, flags);
 	count = 0;
-	while (width-- > 0)
-	{
-		ft_putchar_fd('0', 1);
-		count++;
-	}
+	if (pre_left_stage(data, flags, &p, &count) < 0)
+		return (-1);
+	if (body_and_tail(flags, &p, data, &count) < 0)
+		return (-1);
 	return (count);
 }
 
