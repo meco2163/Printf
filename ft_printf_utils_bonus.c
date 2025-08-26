@@ -6,95 +6,81 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 21:22:24 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/22 02:45:32 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 01:00:34 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	is_zero_case(t_flags *flags, unsigned long n)
+static int	scan_meta_bonus(const char *p, const char **end_out)
 {
-	if (n == 0 && flags->dot == 0)
-		return (1);
+	while (*p == '-' || *p == '0' || *p == '#' || *p == ' ' || *p == '+')
+		p++;
+	if (*p == '*')
+		p++;
+	else
+		while (*p >= '0' && *p <= '9')
+			p++;
+	if (*p == '.')
+	{
+		p++;
+		if (*p == '*')
+			p++;
+		else
+			while (*p >= '0' && *p <= '9')
+				p++;
+	}
+	*end_out = p;
+	return (*p == 'c' || *p == 's' || *p == 'd' || *p == 'i'
+		|| *p == 'u' || *p == 'x' || *p == 'X' || *p == 'p' || *p == '%');
+}
+
+int	precheck_format_bonus(const char *s)
+{
+	const char	*q;
+	int			ok;
+
+	while (*s)
+	{
+		if (*s != '%')
+		{
+			s++;
+			continue ;
+		}
+		if (*(s + 1) == '\0')
+			return (-1);
+		ok = scan_meta_bonus(s + 1, &q);
+		if (ok)
+		{
+			s = q + 1;
+			continue ;
+		}
+		if (*q == '\0')
+			return (-1);
+		if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
+			return (-1);
+		s = q;
+	}
 	return (0);
 }
 
-int	write_left_pad(t_flags *flags, t_hex_params *params)
+static int	emit_invalid_seq_core(
+	const char **format, const char *p, const char *q)
 {
-	int	count;
-
-	count = 0;
-	if (!flags->minus)
-	{
-		if (flags->zero && flags->dot == -1)
-			params->part = put_padding(params->pad, '0');
-		else
-			params->part = put_padding(params->pad, ' ');
-		if (params->part < 0)
-			return (-1);
-		count += params->part;
-	}
-	return (count);
-}
-
-int	write_right_pad(t_flags *flags, t_hex_params *params)
-{
-	int	count;
-
-	count = 0;
-	if (flags->minus)
-	{
-		params->part = put_padding(params->pad, ' ');
-		if (params->part < 0)
-			return (-1);
-		count += params->part;
-	}
-	return (count);
-}
-
-int	acc_write(int fd, const void *s, int count)
-{
-	const char	*buf;
-	int			i;
-	int			w;
-
-	buf = (const char *)s;
-	i = 0;
-	while (i < count)
-	{
-		w = write(fd, buf + i, count - i);
-		if (w < 0)
-			return (-1);
-		i += w;
-	}
-	return (count);
-}
-
-static int	emit_invalid_seq_core(const char **format,
-				const char *p, const char *q)
-{
-	int	count;
-	int	ret;
-
-	count = 0;
-	ret = acc_write(1, "%", 1);
-	if (ret < 0)
+	(void)p;
+	if (*q == '\0')
 		return (-1);
-	count += ret;
-	ret = acc_write(1, p, (int)(q - p));
-	if (ret < 0)
-		return (-1);
-	count += ret;
-	if (*q && !((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z')))
+	if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
 	{
-		ret = acc_write(1, q, 1);
-		if (ret < 0)
+		if (acc_write(1, "%", 1) < 0)
 			return (-1);
-		count += ret;
-		q++;
+		*format = q + 1;
+		return (1);
 	}
+	if (acc_write(1, "%", 1) < 0)
+		return (-1);
 	*format = q;
-	return (count);
+	return (1);
 }
 
 int	emit_invalid_seq_bonus(const char **format, const char *start)
@@ -103,11 +89,10 @@ int	emit_invalid_seq_bonus(const char **format, const char *start)
 	const char	*q;
 
 	p = start;
-	q = scan_meta_end(p);
-	if (*q == '\0')
-	{
-		*format = q;
-		return (-1);
-	}
+	q = p;
+	while (*q && (*q == '-' || *q == '0' || *q == '#' || *q == ' '
+			|| *q == '+' || *q == '*' || *q == '.'
+			|| (*q >= '0' && *q <= '9')))
+		q++;
 	return (emit_invalid_seq_core(format, p, q));
 }

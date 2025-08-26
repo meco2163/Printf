@@ -6,41 +6,57 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:38:18 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/21 21:03:43 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/26 22:31:45 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	put_uint(unsigned long n, int *count)
+static int	put_uint(unsigned long n)
 {
-	char	c;
+	char	buffer[20];
+	int		i;
+	int		count;
+	int		part;
 
-	if (n >= 10)
+	i = 0;
+	if (n == 0)
+		buffer[i++] = '0';
+	while (n > 0)
 	{
-		if (put_uint(n / 10, count) < 0)
-			return (-1);
+		buffer[i++] = '0' + (n % 10);
+		n /= 10;
 	}
-	c = (char)('0' + (n % 10));
-	if (acc_write(count, &c, 1) < 0)
-		return (-1);
-	return (0);
+	count = 0;
+	while (--i >= 0)
+	{
+		part = acc_write(1, &buffer[i], 1);
+		if (part < 0)
+			return (-1);
+		count += part;
+	}
+	return (count);
 }
 
 int	ft_print_int(int n)
 {
 	long	nn;
 	int		count;
+	int		part;
 
-	count = 0;
 	nn = (long)n;
+	count = 0;
 	if (nn < 0)
 	{
-		if (acc_write(&count, "-", 1) < 0)
+		part = acc_write(1, "-", 1);
+		if (part < 0)
 			return (-1);
+		count += part;
 		nn = -nn;
 	}
-	if (put_uint((unsigned long)nn, &count) < 0)
+	part = put_uint((unsigned long)nn);
+	if (part < 0)
 		return (-1);
+	count += part;
 	return (count);
 }

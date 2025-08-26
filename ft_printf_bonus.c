@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:36:08 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/22 02:31:34 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 00:57:52 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,34 +38,25 @@ static int	handle_conversion_bonus(char c, va_list args, t_flags *flags)
 	return (count);
 }
 
-static int	guard_trailing_percent(const char **format)
+static int	dispatch_after_flags(const char **format, va_list args,
+		t_flags *flags, const char *start)
 {
 	int	count;
 
-	if (**format != '\0')
-		return (0);
-	count = acc_write(1, "%", 1);
-	if (count < 0)
-		return (-1);
-	return (-1);
-}
-
-static int	process_percent_bonus(const char **format, va_list args,
-			t_flags *flags)
-{
-	const char	*start;
-	int			r;
-	int			count;
-
-	r = guard_trailing_percent(format);
-	if (r < 0)
-		return (-1);
-	start = *format;
-	parse_all_flags(format, flags, args);
-	r = guard_trailing_percent(format);
-	if (r < 0)
-		return (-1);
-	if (is_spec((int)**format))
+	if (**format == '%')
+	{
+		flags->hash = 0;
+		flags->space = 0;
+		flags->plus = 0;
+		if (flags->dot >= 0)
+			flags->dot = -1;
+		count = ft_print_percent_bonus(flags);
+		(*format)++;
+		return (count);
+	}
+	if ((**format == 'c') || (**format == 's') || (**format == 'd')
+		|| (**format == 'i') || (**format == 'u') || (**format == 'x')
+		|| (**format == 'X') || (**format == 'p'))
 	{
 		count = handle_conversion_bonus(**format, args, flags);
 		(*format)++;
@@ -74,8 +65,21 @@ static int	process_percent_bonus(const char **format, va_list args,
 	return (emit_invalid_seq_bonus(format, start));
 }
 
-static int	step_bonus(const char **format, va_list args,
-			t_flags *flags, int *count)
+static int	process_percent_bonus(const char **format,
+		va_list args, t_flags *flags)
+{
+	const char	*start;
+
+	if (**format == '\0')
+		return (-1);
+	start = *format;
+	parse_all_flags(format, flags, args);
+	if (**format == '\0')
+		return (-1);
+	return (dispatch_after_flags(format, args, flags, start));
+}
+
+static int	step_bonus(const char **format, va_list args, t_flags *flags)
 {
 	int	part;
 
@@ -84,16 +88,14 @@ static int	step_bonus(const char **format, va_list args,
 		part = acc_write(1, *format, 1);
 		if (part < 0)
 			return (-1);
-		*count += part;
 		(*format)++;
-		return (0);
+		return (part);
 	}
 	(*format)++;
 	part = process_percent_bonus(format, args, flags);
 	if (part < 0)
 		return (-1);
-	*count += part;
-	return (0);
+	return (part);
 }
 
 int	ft_printf(const char *format, ...)
@@ -101,20 +103,23 @@ int	ft_printf(const char *format, ...)
 	va_list	args;
 	t_flags	flags;
 	int		count;
-	int		status;
+	int		part;
 
 	if (!format)
+		return (-1);
+	if (precheck_format_bonus(format) < 0)
 		return (-1);
 	va_start(args, format);
 	count = 0;
 	while (*format)
 	{
-		status = step_bonus(&format, args, &flags, &count);
-		if (status)
+		part = step_bonus(&format, args, &flags);
+		if (part < 0)
 		{
 			va_end(args);
 			return (-1);
 		}
+		count += part;
 	}
 	va_end(args);
 	return (count);

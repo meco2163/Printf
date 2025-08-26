@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:39:01 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/21 20:22:44 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/25 02:45:11 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,5 @@
 
 int	ft_print_percent(void)
 {
-	int	count;
-
-	count = 0;
-	if (acc_write(&count, "%", 1) < 0)
-		return (-1);
-	return (count);
+	return (acc_write(1, "%", 1));
 }

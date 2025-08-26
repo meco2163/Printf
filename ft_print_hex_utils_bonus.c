@@ -6,14 +6,22 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:37:38 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/22 03:37:21 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/25 15:05:10 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdlib.h>
+#include "Libft/libft.h"
 
-static int	hexlen(unsigned long n)
+int	add_count(int *count, int part)
+{
+	if (part < 0)
+		return (-1);
+	*count += part;
+	return (0);
+}
+
+int	hexlen(unsigned long n)
 {
 	int	len;
 
@@ -45,62 +53,54 @@ t_hex_params	compute_hex_params(const char *s, t_flags *flags,
 	return (params);
 }
 
-char	*ft_ultoa_base(unsigned long n, int is_upper)
+int	write_padded_literal(
+	t_flags *flags, t_hex_params *params, const char *s, int count)
 {
-	const char	*digits;
-	char		*str;
-	int			len;
-
-	if (is_upper)
-		digits = "0123456789ABCDEF";
-	else
-		digits = "0123456789abcdef";
-	len = hexlen(n);
-	str = (char *)malloc(len + 1);
-	if (!str)
-		return (NULL);
-	str[len] = '\0';
-	while (len--)
-	{
-		str[len] = digits[n % 16];
-		n /= 16;
-	}
-	return (str);
-}
-
-int	write_hex_left_pad(t_flags *flags, t_hex_params *p, int zero_mode)
-{
-	if (flags->minus)
-		return (0);
-	if (zero_mode)
-		return (put_padding(p->pad, '0'));
-	return (put_padding(p->pad, ' '));
-}
-
-int	write_padded_literal(t_flags *flags, t_hex_params *f, const char *s)
-{
-	int	count;
-
-	f->pad = get_padding(flags->width, f->len);
-	count = 0;
+	params->pad = get_padding(flags->width, params->len);
 	if (!flags->minus)
 	{
-		f->part = put_padding(f->pad, ' ');
-		if (f->part < 0)
+		params->part = put_padding(params->pad, ' ');
+		if (params->part < 0)
 			return (-1);
-		count += f->part;
+		count += params->part;
 	}
-	if (f->len > 0)
+	if (params->len > 0)
 	{
-		if (acc_write(&count, s, f->len) < 0)
+		params->part = acc_write(1, s, params->len);
+		if (params->part < 0)
 			return (-1);
+		count += params->part;
 	}
 	if (flags->minus)
 	{
-		f->part = put_padding(f->pad, ' ');
-		if (f->part < 0)
+		params->part = put_padding(params->pad, ' ');
+		if (params->part < 0)
 			return (-1);
-		count += f->part;
+		count += params->part;
+	}
+	return (count);
+}
+
+int	emit_right_side(const char *s, t_flags *flags, t_hex_params *p)
+{
+	int	count;
+	int	part;
+
+	count = 0;
+	part = put_padding(p->dotpad, '0');
+	if (part < 0)
+		return (-1);
+	count += part;
+	part = ft_putnstr_fd(s, p->len, 1);
+	if (part < 0)
+		return (-1);
+	count += part;
+	if (flags->minus)
+	{
+		part = put_padding(p->pad, ' ');
+		if (part < 0)
+			return (-1);
+		count += part;
 	}
 	return (count);
 }

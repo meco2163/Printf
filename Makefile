@@ -6,7 +6,7 @@
 #    By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/17 05:41:00 by mekaplan          #+#    #+#              #
-#    Updated: 2025/08/22 02:13:50 by mekaplan         ###   ########.fr        #
+#    Updated: 2025/08/25 02:29:16 by mekaplan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,9 +30,10 @@ SRCS        = ft_printf.c \
               ft_print_int.c \
               ft_print_unsigned.c \
               ft_print_hex.c \
-              ft_print_percent.c 
+              ft_print_percent.c \
 
 BONUS_SRCS  = ft_printf_bonus.c \
+              ft_printf_utils_bonus.c \
               ft_print_char_bonus.c \
               ft_print_string_bonus.c \
               ft_print_int_bonus.c \
@@ -41,6 +42,7 @@ BONUS_SRCS  = ft_printf_bonus.c \
               ft_print_hex_bonus.c \
               ft_print_hex_utils_bonus.c \
               ft_print_pointer_bonus.c \
+              ft_print_pointer_utils_bonus.c \
               ft_print_percent_bonus.c \
               ft_flags_bonus.c \
               ft_flags_utils_bonus.c

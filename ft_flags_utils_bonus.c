@@ -6,14 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:35:10 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/22 02:39:47 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/26 22:30:31 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include "Libft/libft.h"
 #include <unistd.h>
-#include <stdlib.h>
 
 int	put_padding(int width, char c)
 {
@@ -26,7 +24,7 @@ int	put_padding(int width, char c)
 	while (i < width)
 	{
 		w = write(1, &c, 1);
-		if (w <= 0)
+		if (w < 0)
 			return (-1);
 		i += w;
 	}
@@ -51,7 +49,7 @@ int	ft_putnstr_fd(const char *s, int count, int fd)
 	while (s[i] && i < count)
 	{
 		w = write(fd, s + i, 1);
-		if (w <= 0)
+		if (w < 0)
 			return (-1);
 		i += w;
 	}
@@ -66,14 +64,30 @@ int	calc_prefix_len(t_flags *flags, unsigned long n, char format)
 	return (0);
 }
 
-char	*get_hex_str(
-	t_flags *flags, va_list args, char format, unsigned long *n)
+int	acc_write(int fd, const void *s, int count)
 {
-	if (format == 'p')
-		*n = (unsigned long)va_arg(args, void *);
-	else
-		*n = (unsigned int)va_arg(args, unsigned int);
-	if (*n == 0 && flags->dot == 0)
-		return (ft_strdup(""));
-	return (ft_ultoa_base(*n, format == 'X'));
+	const char	*buf;
+	int			i;
+	int			w;
+	int			attempts;
+
+	buf = (const char *)s;
+	i = 0;
+	attempts = 0;
+	while (i < count)
+	{
+		w = write(fd, buf + i, count - i);
+		if (w < 0)
+			return (-1);
+		if (w == 0)
+		{
+			attempts++;
+			if (attempts > 1000)
+				return (-1);
+		}
+		else
+			attempts = 0;
+		i += w;
+	}
+	return (count);
 }

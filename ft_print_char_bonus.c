@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:35:33 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/22 02:38:02 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/24 22:29:27 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ static int	emit_pad(t_hex_params *params, char ch)
 
 static char	choose_padc(t_flags *flags)
 {
-	if (!flags->minus && flags->zero)
-		return ('0');
+	(void)flags;
 	return (' ');
 }
 
