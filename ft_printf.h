@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:36:47 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 00:48:41 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 02:26:27 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ int				ft_print_hex_bonus(t_flags *flags, va_list args, char format);
 int				ft_print_pointer_bonus(t_flags *flags, va_list args);
 int				ft_print_percent_bonus(t_flags *flags);
 
-int				slen(const char *s);
 int				acc_write(int fd, const void *s, int count);
 int				emit_invalid_seq(const char **format);
 int				scan_meta(const char *p, const char **end_out);

@@ -6,22 +6,12 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 17:32:44 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 00:41:13 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 02:25:45 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <unistd.h>
-
-int	slen(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
 
 int	scan_meta(const char *p, const char **end_out)
 {

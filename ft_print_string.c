@@ -6,11 +6,21 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:39:30 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/23 00:21:59 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 02:26:06 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+static int	slen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
 
 int	ft_print_string(char *s)
 {
