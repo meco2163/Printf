@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:36:08 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 00:57:52 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 02:57:29 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static int	handle_conversion_bonus(char c, va_list args, t_flags *flags)
 }
 
 static int	dispatch_after_flags(const char **format, va_list args,
-		t_flags *flags, const char *start)
+			t_flags *flags, const char *start)
 {
 	int	count;
 

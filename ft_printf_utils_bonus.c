@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 21:22:24 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 01:00:34 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 03:03:34 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,13 @@ int	precheck_format_bonus(const char *s)
 		}
 		if (*q == '\0')
 			return (-1);
-		if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
-			return (-1);
 		s = q;
 	}
 	return (0);
 }
 
-static int	emit_invalid_seq_core(
-	const char **format, const char *p, const char *q)
+static int	emit_invalid_seq_core(const char **format,
+		const char *p, const char *q)
 {
 	(void)p;
 	if (*q == '\0')

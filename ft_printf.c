@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 05:36:24 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 02:27:24 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 02:55:12 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ static int	precheck_format(const char *s)
 			continue ;
 		}
 		if (*q == '\0')
-			return (-1);
-		if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
 			return (-1);
 		s = q;
 	}

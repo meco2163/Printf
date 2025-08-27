@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 17:32:44 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 02:25:45 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 03:02:42 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,19 @@ int	scan_meta(const char *p, const char **end_out)
 	return (0);
 }
 
-static int	emit_invalid_core(const char **format, const char *p, const char *q)
+static int	emit_invalid_seq_core(const char **format,
+		const char *p, const char *q)
 {
 	(void)p;
+	if (*q == '\0')
+		return (-1);
+	if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
+	{
+		if (acc_write(1, "%", 1) < 0)
+			return (-1);
+		*format = q + 1;
+		return (1);
+	}
 	if (acc_write(1, "%", 1) < 0)
 		return (-1);
 	*format = q;
@@ -40,22 +50,23 @@ int	emit_invalid_seq(const char **format)
 {
 	const char	*p;
 	const char	*q;
-	int			is_spec;
 
 	p = *format + 1;
-	is_spec = scan_meta(p, &q);
-	(void)is_spec;
-	if (*q == '\0')
+	if (*p == '\0')
 	{
-		*format = q;
+		*format = p;
 		return (-1);
 	}
-	if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
+	if (!scan_meta(p, &q))
 	{
-		*format = q + 1;
-		return (-1);
+		if (*q == '\0')
+		{
+			*format = q;
+			return (-1);
+		}
+		return (emit_invalid_seq_core(format, p, q));
 	}
-	return (emit_invalid_core(format, p, q));
+	return (-1);
 }
 
 int	acc_write(int fd, const void *s, int count)
