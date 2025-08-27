@@ -6,7 +6,7 @@
 /*   By: mekaplan <mekaplan@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 21:22:24 by mekaplan          #+#    #+#             */
-/*   Updated: 2025/08/27 03:03:34 by mekaplan         ###   ########.fr       */
+/*   Updated: 2025/08/27 03:18:00 by mekaplan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,17 @@ static int	emit_invalid_seq_core(const char **format,
 	(void)p;
 	if (*q == '\0')
 		return (-1);
+	if (*q == 'h' || *q == 'l' || *q == 'L'
+		|| *q == 'j' || *q == 'z' || *q == 't')
+		return (-1);
 	if ((*q >= 'A' && *q <= 'Z') || (*q >= 'a' && *q <= 'z'))
 	{
 		if (acc_write(1, "%", 1) < 0)
 			return (-1);
+		if (acc_write(1, q, 1) < 0)
+			return (-1);
 		*format = q + 1;
-		return (1);
+		return (2);
 	}
 	if (acc_write(1, "%", 1) < 0)
 		return (-1);
